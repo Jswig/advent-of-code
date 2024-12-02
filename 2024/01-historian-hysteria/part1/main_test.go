@@ -21,11 +21,11 @@ func TestBuildLists(t *testing.T) {
 	}
 }
 
-func TestDistanceBetweenLists(t *testing.T) {
+func TestDistance(t *testing.T) {
 	first := []int{3, 4, 2, 1, 3, 3}
 	second := []int{4, 3, 5, 3, 9, 3}
 
-	got := distanceBetweenLists(first, second)
+	got := distance(first, second)
 	want := 11
 
 	if got != want {

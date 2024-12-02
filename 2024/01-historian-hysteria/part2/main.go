@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -14,6 +13,7 @@ func check(e error) {
 	}
 }
 
+// reads the contents of a text files into a string
 func readContents(filename string) string {
 	data, err := os.ReadFile(filename)
 	check(err)
@@ -45,21 +45,28 @@ func buildLists(lists string) ([]int, []int) {
 	return first, second
 }
 
-func distance(first []int, second []int) int {
-	slices.Sort(first)
-	slices.Sort(second)
-
-	distance := 0
-	for i := range len(first) {
-		val1 := first[i]
-		val2 := second[i]
-		if val1 > val2 {
-			distance += (val1 - val2)
+// computes the similarity score between two lists
+func similarity(first []int, second []int) int {
+	occurences := make(map[int]int)
+	// compute all occurences in the second list
+	for _, num := range second {
+		_, present := occurences[num]
+		if present {
+			occurences[num] += 1
 		} else {
-			distance += (val2 - val1)
+			occurences[num] = 1
 		}
 	}
-	return distance
+
+	score := 0
+	for _, num := range first {
+		count, present := occurences[num]
+		if present {
+			score += (num * count)
+		}
+	}
+
+	return score
 }
 
 func main() {
@@ -71,7 +78,7 @@ func main() {
 
 	content := readContents(fileName)
 	first, second := buildLists(content)
-	distance := distance(first, second)
+	similarity := similarity(first, second)
 
-	fmt.Printf("Total distance between lists: %d\n", distance)
+	fmt.Printf("Similarity between lists: %d\n", similarity)
 }
